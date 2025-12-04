@@ -1,0 +1,124 @@
+📱 PROJETO DE JOGO: "Apanhada Digital", ou “Danger Zone” ou “Radioactivo”
+Descrição: Um jogo multijogador local que mistura o clássico jogo da apanhada com tecnologia móvel, usando sensores de proximidade, estratégia de equipa e comunicação em tempo real.
+1. Tecnologia e Sensores
+Conexão: Bluetooth Low Energy (BLE) e Rede Mesh (P2P). O jogo não depende de Internet.
+Deteção de Distância: Usa-se o RSSI (força do sinal Bluetooth).
+Sinal Forte (>-60dBm): Muito perto (Dano Crítico / Interação).
+Sinal Médio (>-80dBm): Perto (Aviso / Dano Lento).
+Outros Sensores:
+Vibração: Feedback físico quando levas dano.
+GPS (Opcional): Para marcar bases fixas no mapa.
+Ecrã Tátil: Para usar botões de ação e ver o radar.
+2. Classes e Personagens
+Os jogadores escolhem uma função (Role) no início da partida:
+🔴 O Apanhador (Vilão):
+Habilidade: Emite radiação digital constante.
+Objetivo: Aproximar-se dos fugitivos para reduzir a vida deles a 0.
+🏃 O Fugitivo (Sobrevivente Padrão):
+Habilidade: Pode usar itens apanhados no mapa (ex: Manto da Invisibilidade).
+Objetivo: Sobreviver até o tempo acabar.
+🟢 O Médico (Suporte):
+Habilidade: Emite uma "Zona de Cura". Quem estiver perto dele regenera vida.
+Regra Crítica: Se o médico for eliminado, a equipa perde a capacidade de cura permanente.
+💻 O Hacker (Sabotador):
+Habilidade: Se chegar muito perto do Apanhador, pode enviar um "vírus" que bloqueia o radar do vilão (deixa o ecrã dele com estática) por 5 segundos.
+3. Mecânicas de Jogo (Regras)
+Sistema de Vida Dinâmico: Todos os Fugitivos começam com 100% de vida.
+Perto do Apanhador = Vida desce.
+Perto do Médico = Vida sobe.
+Safe Zones (Bases Seguras): Locais no mundo real (definidos por coordenadas GPS ou leitura de QR Codes colados em paredes) onde os jogadores estão imunes a dano.
+Modo "Bomba Relógio" (Variante): O Apanhador passa uma "bomba virtual". O jogador "infetado" tem 30 segundos para tocar (via Bluetooth) noutro jogador para passar a bomba, senão é eliminado.
+Sistema Anti-Batota: Se a aplicação detetar que um jogador desligou o Bluetooth propositadamente para fugir, recebe "Game Over" imediato.
+4. Interface e Comunicação (HUD)
+Para garantir a coordenação da equipa sem parar de correr, o ecrã serve como painel tático:
+Feedback Visual:
+As bordas do ecrã ficam vermelhas a piscar quando se está a levar dano.
+As bordas ficam verdes quando se está a receber cura.
+Radar Visual: Um círculo no centro que pulsa mais rápido conforme a proximidade do inimigo.
+Sistema de Pings (Mensagens Rápidas): Botões grandes no ecrã para comunicação instantânea via Bluetooth:
+📢 SOS: Envia alerta sonoro ao Médico ("Preciso de cura!").
+👀 INIMIGO: Marca a presença do Apanhador para avisar os outros.
+🏠 BASE: Chama a equipa para reagrupar na zona segura.
+Lista de Equipa: Pequena lista no canto do ecrã com o estado dos colegas (Ex: "Maria: 40% Vida | João: Eliminado").
+Mais uma ideia – como garantir que um jogador não foge para casa??
+Criar o conceito de limite de jogo, baseado no calculo de todos os jogadores… se o raio um jogador estiver muito longe dos outros, vai perdendo vida até que GAME OVER!!
+Estilo/arte gráfica do jogo – tipo “stranger things” – Retro
+O que fazer se alguém ligar?
+5. Exemplo de Lógica de Programação (Pseudo-código)
+Este é o esboço do código que controla o telemóvel de um Fugitivo:
+Python
+# --- LOOP PRINCIPAL DO JOGO (Fugitivo) ---
+vida = 100
+ENQUANTO jogo_ativo:
+    # 1. ESCUTAR: O telemóvel procura sinais Bluetooth à volta
+    sinais = procurar_dispositivos_proximos()
+    # 2. PROCESSAR DANO (Se o Apanhador estiver perto)
+    SE sinais.existe("Apanhador"):
+        forca_sinal = sinais.ler_rssi("Apanhador")
+        SE forca_sinal > -60: # Muito Perto (Dano Alto)
+            vida = vida - 10
+            vibrar_telemovel(intenso)
+            interface.mostrar_aviso("CORRE!! INIMIGO PERTO!")
+        SENAO SE forca_sinal > -80: # Perto (Dano Baixo)
+            vida = vida - 2
+    # 3. PROCESSAR CURA (Se o Médico estiver perto)
+    SE sinais.existe("Medico") E vida < 100:
+        forca_sinal = sinais.ler_rssi("Medico")
+        SE forca_sinal > -70: # Só cura se estiver bem perto
+            vida = vida + 5
+            interface.mostrar_efeito_verde()
+    # 4. PROCESSAR MENSAGENS DE EQUIPA
+    mensagem = rede.receber_mensagem()
+    SE mensagem == "SOS":
+        interface.mostrar_alerta("O Jogador X precisa de ajuda!")
+    # 5. VERIFICAR DERROTA
+    SE vida <= 0:
+        print("GAME OVER - Foste Apanhado!")
+        rede.enviar_para_todos("O Jogador X foi eliminado.")
+        parar_jogo()
+Já conseguiste copiar o texto acima? Se precisares que eu explique mais alguma parte do código, é só dizeres!
+qual seria a melhor tecnologia para implementar este jogo de forma a que todos pudessem jogar
+Ajudante de programação
+Para que todos possam jogar (quem tem Android e quem tem iPhone) sem que tu tenhas de escrever o código duas vezes (uma para cada sistema), a melhor solução tecnológica atual chama-se Desenvolvimento Cross-Platform (Multiplataforma).
+Aqui está a recomendação técnica detalhada para o teu projeto "Apanhada Digital":
+1. A Estrutura Principal: Flutter
+A melhor tecnologia para criares este jogo hoje é o Flutter (criado pela Google).
+Porquê? Permite escreveres o código uma única vez (na linguagem Dart) e a aplicação funciona tanto em Android como em iOS (iPhone).
+Vantagem para o teu jogo: O Flutter é excelente a desenhar interfaces rápidas e bonitas (o teu HUD, radares, botões a piscar) e tem ótima performance, o que é essencial para um jogo em tempo real.
+2. A Comunicação: Bluetooth Low Energy (BLE)
+Para a "magia" da proximidade funcionar entre marcas diferentes (um Samsung detetar um iPhone), tens de usar o protocolo BLE (Bluetooth Low Energy).
+O Wi-Fi Direct é mais rápido, mas a Apple (iOS) bloqueia muito o acesso a essa tecnologia para programadores. O Bluetooth é a única "linguagem universal" que ambos os sistemas deixam usar livremente.
+O Desafio Técnico (e a solução): Normalmente, os telemóveis funcionam como "Cliente" (quem procura) ou "Servidor" (quem emite sinal). No teu jogo, todos os telemóveis têm de fazer as duas coisas ao mesmo tempo:
+Emitir sinal ("Eu sou o Jogador X").
+Ler sinal ("Quem está perto de mim?").
+Para fazer isto em Flutter, recomendo usar estas bibliotecas específicas (plugins):
+flutter_blue_plus: Para o telemóvel procurar outros (Scanning).
+flutter_ble_peripheral: Para o telemóvel emitir o seu sinal (Advertising).
+3. Tabela de Comparação
+Aqui podes ver porque é que o Flutter é a escolha vencedora para o teu objetivo:
+Tecnologia
+Compatibilidade
+Dificuldade
+O Veredito
+Nativa (Kotlin para Android + Swift para iOS)
+Perfeita
+⭐⭐⭐ (Difícil)
+Terias de fazer duas apps separadas. Muito trabalho para uma pessoa só.
+Web PWA (Site no browser)
+Alta
+⭐ (Fácil)
+Não serve. O iPhone não deixa sites usarem Bluetooth em segundo plano. O jogo não funcionaria.
+Unity (Motor de Jogos)
+Alta
+⭐⭐ (Média)
+Bom para gráficos 3D, mas lidar com Bluetooth em Unity é mais complexo e a app ficaria muito "pesada" e gastaria muita bateria.
+Flutter (Recomendado)
+Alta
+⭐⭐ (Média)
+A Melhor Opção. Código único, leve, rápido e com bons plugins de Bluetooth.
+4. Resumo da Arquitetura do Código
+Se fores contratar alguém ou aprender a programar, esta é a "lista de compras" tecnológica para o sucesso do projeto:
+Linguagem: Dart (usando o framework Flutter).
+Comunicação: Bluetooth Low Energy (BLE).
+Base de Dados Local: SQLite ou Hive (para guardar o nome do jogador e recordes no telemóvel).
+Para evitar batota: O código deve validar se o UUID (a identidade do Bluetooth) muda subitamente.
