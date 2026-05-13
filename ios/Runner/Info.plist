@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>A aplicação necessita de usar o Bluetooth para encontrar e comunicar com os outros jogadores na partida (Apanhada Digital).</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>A aplicação necessita de usar o Bluetooth para emitir o seu sinal para os outros jogadores da partida (Apanhada Digital).</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>A aplicação necessita da localização em utilização apenas para otimizar o scan de dispositivos Bluetooth.</string>
 </dict>
 </plist>
