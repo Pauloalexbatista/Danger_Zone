@@ -36,6 +36,9 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Future<void> _startGame() async {
+    // Initialize Game Logic (Vibration cache)
+    await _gameLogic.init();
+
     // Start Game Loop IMMEDIATELY (Don't wait for Bluetooth)
     _gameLoopTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       _updateGameState();
@@ -104,7 +107,13 @@ class _GameScreenState extends State<GameScreen> {
       }
 
       if (damageTaken > 0) {
-        double newHealth = _health - (damageTaken * 0.1);
+        double newHealth = await _gameLogic.calculateNewHealth(
+          currentHealth: _health,
+          myRole: widget.role,
+          nearbyPlayers: _nearbyPlayers,
+          deltaTimeSeconds: 0.1,
+        );
+
         if (mounted) {
           setState(() {
             _health = newHealth < 0 ? 0 : newHealth;

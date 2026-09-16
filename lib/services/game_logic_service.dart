@@ -12,6 +12,12 @@ class GameLogicService {
       1.0; // Passive heal if safe? Or only with Medic?
   // For MVP: No passive heal, only damage.
 
+  bool _hasVibrator = false;
+
+  Future<void> init() async {
+    _hasVibrator = await Vibration.hasVibrator() ?? false;
+  }
+
   Future<double> calculateNewHealth({
     required double currentHealth,
     required PlayerRole myRole,
@@ -46,7 +52,7 @@ class GameLogicService {
       double newHealth = currentHealth - (damageTaken * deltaTimeSeconds);
 
       // Haptic feedback
-      if (isVibrating && await Vibration.hasVibrator() == true) {
+      if (isVibrating && _hasVibrator) {
         Vibration.vibrate(duration: 100);
       }
 
